@@ -26,7 +26,7 @@ const menuData = [
       "Pan-seared trout topped with a buttery almond sauce, served with seasonal vegetables.",
     price: 22,
     image: "foodlist/trout_amandine.png",
-    soldOut: false,
+    soldOut: true,
   },
   {
     name: "Lasagna",
@@ -75,29 +75,40 @@ function Header() {
 }
 
 function Menu() {
+  const menuCount = menuData.length;
   return (
     <main className="menu">
       <h2 className="menu">Our Menu</h2>
 
-      <ul className="foods">
-        {menuData.map((food) => (
-          <Foodlist foodObj={food} key={food.name} />
-        ))}
-      </ul>
+      {menuCount > 0 ? (
+        <>
+          <p>
+            From rich, indulgent creations to fresh, vibrant plates, our menu is
+            designed to take you on a culinary journey that is as exciting as it
+            is satisfying.
+          </p>
+
+          <ul className="foods">
+            {menuData.map((food) => (
+              <Foodlist foodObj={food} key={food.name} />
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>We're still working on our menu. Please visit us later.</p>
+      )}
     </main>
   );
 }
 
-function Foodlist(props) {
-  if (props.foodObj.soldOut) return null;
-
+function Foodlist({ foodObj }) {
   return (
-    <li className="food">
-      <img src={props.foodObj.image} alt={props.foodObj.name} />
+    <li className={`food ${foodObj.soldOut ? "sold-out" : ""}`}>
+      <img src={foodObj.image} alt={foodObj.name} />
       <div>
-        <h3>{props.foodObj.name}</h3>
-        <p class>{props.foodObj.description}</p>
-        <span>{props.foodObj.price}</span>
+        <h3>{foodObj.name}</h3>
+        <p class>{foodObj.description}</p>
+        <span>{foodObj.soldOut ? "SOLD OUT" : foodObj.price}</span>
       </div>
     </li>
   );
@@ -112,7 +123,7 @@ function Footer() {
   return (
     <footer className="footer">
       {isOpen ? (
-        <Order closeHour={closeHour} />
+        <Order closeHour={closeHour} openHour={openHour} />
       ) : (
         <p>
           We're happy to welcome you between {openHour}:00 and {closeHour}:00
@@ -122,11 +133,12 @@ function Footer() {
   );
 }
 
-function Order(props) {
+function Order({ closeHour, openHour }) {
   return (
     <div className="order">
       <p>
-        We're open until {props.closeHour}:00. Come visit us or order online.
+        We're open from {openHour}:00 until {closeHour}:00. Come visit us or
+        order online.
       </p>
       <button className="btn">Order</button>
     </div>
